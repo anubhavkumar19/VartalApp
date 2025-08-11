@@ -6,11 +6,25 @@ input::placeholder {
     color: #FADA7A;
 }
 
-input {
+input, .bgmid {
     background-color: #f9b062 !important;
 }
 
 input:focus {
     background-color: #f5f5f0;
     outline: none;
+}
+
+:root {
+    scrollbar-color:
+        color-mix(in oklch, currentColor 35%, #0000) #0000;
+    background-color: #FADA7A;
+}
+
+.bglight{
+    background-color: #FADA7A;
+}
+.bgdark{
+    background-color: #F0A04B;
+    color: black;
 }
