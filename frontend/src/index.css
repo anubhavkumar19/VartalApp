@@ -1,3 +1,16 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+input::placeholder {
+    color: #FADA7A;
+}
+
+input {
+    background-color: #f9b062 !important;
+}
+
+input:focus {
+    background-color: #f5f5f0;
+    outline: none;
+}
