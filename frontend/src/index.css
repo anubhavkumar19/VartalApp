@@ -24,7 +24,11 @@ input:focus {
 .bglight{
     background-color: #FADA7A;
 }
-.bgdark{
+.bgdark, aside{
     background-color: #F0A04B;
     color: black;
+}
+
+.hover-light:hover{
+    background-color: #f9b062 !important;
 }
