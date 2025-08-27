@@ -1,51 +1,58 @@
 import { Link } from "react-router-dom";
 import { useAuthStore } from "../store/useAuthStore";
-import { LogOut, MessagesSquare, Settings, CircleUserRound } from "lucide-react";
+import { LogOut, MessagesSquare, Settings, CircleUserRound, House } from "lucide-react";
 
 const Navbar = () => {
   const { logout, authUser } = useAuthStore();
 
   return (
-    <header
-      className="bg-base-100 border-base-300 fixed w-full top-0 z-40 
-    backdrop-blur-lg bg-base-100/80"
-      style={{ backgroundColor: "#F0A04B", color: "black" }}>
-      <div className="container mx-auto px-4 h-16">
+    <header className="bg-white/90 backdrop-blur-md border-b border-gray-200 fixed w-full top-0 z-40 shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 h-16">
         <div className="flex items-center justify-between h-full">
+          {/* Logo and Brand */}
           <div className="flex items-center gap-8">
-            <Link to="/" className="flex items-center gap-2.5 hover:opacity-80 transition-all">
-              <div className="size-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                <MessagesSquare className="w-10 h-10" style={{ color: "#FADA7A" }} />
+            <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-all">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                <MessagesSquare className="w-6 h-6 text-primary" />
               </div>
-              <h1 className="text-lg font-bold" >VartalApp</h1>
+              <h1 className="text-xl font-bold text-gray-800">VartalApp</h1>
             </Link>
           </div>
 
-          <div className="flex items-center gap-2">
+          {/* Navigation Links */}
+          <div className="flex items-center gap-1">
             <Link
-              to={"/settings"}
-              className={`
-              btn btn-sm gap-2 transition-colors
-              `}
-              style={{ backgroundColor: "#f8df83", border: "2px #f9b062", color: "black" }}
+              to={"/"}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors"
             >
-              <Settings className="w-4 h-4" />
-              <span className="hidden sm:inline">Settings</span>
+              <House className="w-5 h-5" />
+              <span className="hidden sm:inline font-medium">Home</span>
             </Link>
 
             {authUser && (
               <>
-                <Link to={"/profile"} className={`btn btn-sm gap-2`}
-                  style={{ backgroundColor: "#f8df83", border: "2px #f9b062", color: "black" }}> {/*Style*/}
-
-                  <CircleUserRound className="size-5" />
-                  <span className="hidden sm:inline">Profile</span>
+                <Link 
+                  to={"/profile"} 
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors"
+                >
+                  <CircleUserRound className="w-5 h-5" />
+                  <span className="hidden sm:inline font-medium">Profile</span>
                 </Link>
 
-                <button className="flex gap-2 items-center btn btn-sm" onClick={logout}
-                  style={{ backgroundColor: "#f8df83", border: "2px #f9b062", color: "black" }}> {/*Style*/}
-                  <LogOut className="size-5" />
-                  <span className="hidden sm:inline">Logout</span>
+                <Link
+                  to={"/settings"}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors"
+                >
+                  <Settings className="w-5 h-5" />
+                  <span className="hidden sm:inline font-medium">Themes</span>
+                </Link>
+
+                <button 
+                  onClick={logout}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg text-gray-600 hover:text-red-600 hover:bg-red-50 transition-colors"
+                >
+                  <LogOut className="w-5 h-5" />
+                  <span className="hidden sm:inline font-medium">Logout</span>
                 </button>
               </>
             )}
@@ -55,4 +62,5 @@ const Navbar = () => {
     </header>
   );
 };
+
 export default Navbar;
