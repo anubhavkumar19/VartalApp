@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-input::placeholder {
+/* input::placeholder {
     color: #FADA7A;
 }
 
@@ -31,4 +31,4 @@ input:focus {
 
 .hover-light:hover{
     background-color: #f9b062 !important;
-}
+} */
