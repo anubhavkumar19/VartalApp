@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuthStore } from "../store/useAuthStore.js";
-import { Eye, EyeOff, Loader2, Lock, Mail, MessagesSquare, User } from "lucide-react";
+import { Eye, EyeOff, Loader2, Lock, Mail, MessagesSquare, User, CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import AuthImagePattern from "../components/AuthImagePattern.jsx";
@@ -13,6 +13,7 @@ const SignUpPage = () => {
     email: "",
     password: "",
   });
+  const [verificationSent, setVerificationSent] = useState(false);
 
   const { signup, isSigningUp } = useAuthStore();
 
@@ -26,18 +27,81 @@ const SignUpPage = () => {
     return true;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const success = validateForm();
 
-    if (success === true) signup(formData);
+    if (success === true) {
+      try {
+        await signup(formData);
+        setVerificationSent(true);
+        toast.success("Account created! Please check your email for verification link.");
+      } catch (error) {
+        // Error handling is done in the store
+      }
+    }
   };
+
+  // If verification email has been sent, show success message
+  if (verificationSent) {
+    return (
+      <div className="min-h-screen grid lg:grid-cols-2">
+        <AuthImagePattern
+          title="Verify Your Email"
+          subtitle="We've sent a verification link to your email address."
+        />
+
+        <div className="flex flex-col justify-center items-center p-6 sm:p-12">
+          <div className="w-full max-w-md space-y-8 text-center">
+            {/* Success Icon */}
+            <div className="flex justify-center">
+              <div className="size-20 rounded-full bg-success/10 flex items-center justify-center">
+                <CheckCircle className="size-10 text-success" />
+              </div>
+            </div>
+
+            <h1 className="text-2xl font-bold">Check Your Email</h1>
+            
+            <div className="space-y-4">
+              <p className="text-base-content/70">
+                We've sent a verification link to <strong>{formData.email}</strong>
+              </p>
+              
+              <p className="text-base-content/60 text-sm">
+                Click the link in the email to verify your account and start using our chat application.
+              </p>
+
+              <div className="bg-base-200 rounded-lg p-4 mt-4">
+                <p className="text-sm text-base-content/60">
+                  <strong>Didn't receive the email?</strong>
+                </p>
+                <p className="text-sm text-base-content/60 mt-1">
+                  Check your spam folder or{" "}
+                  <button
+                    onClick={() => setVerificationSent(false)}
+                    className="link link-primary text-sm"
+                  >
+                    try signing up again
+                  </button>
+                </p>
+              </div>
+            </div>
+
+            <div className="pt-4">
+              <Link to="/login" className="btn btn-primary w-full">
+                Go to Login
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen grid lg:grid-cols-2">
       {/* left side */}
-
       <AuthImagePattern
         title="Join our community"
         subtitle="Connect with friends, share moments, and stay in touch with your loved ones."
@@ -130,7 +194,7 @@ const SignUpPage = () => {
               {isSigningUp ? (
                 <>
                   <Loader2 className="size-5 animate-spin" />
-                  Loading...
+                  Creating Account...
                 </>
               ) : (
                 "Create Account"
@@ -148,9 +212,8 @@ const SignUpPage = () => {
           </div>
         </div>
       </div>
-
-      
     </div>
   );
 };
+
 export default SignUpPage;

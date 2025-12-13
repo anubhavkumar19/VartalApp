@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useAuthStore } from "../store/useAuthStore";
 import AuthImagePattern from "../components/AuthImagePattern";
 import { Link } from "react-router-dom";
-import { Eye, EyeOff, Loader2, Lock, Mail, MessagesSquare } from "lucide-react";
+import { Eye, EyeOff, Loader2, Lock, Mail, MessagesSquare, AlertCircle } from "lucide-react";
+import toast from "react-hot-toast";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -10,11 +11,30 @@ const LoginPage = () => {
     email: "",
     password: "",
   });
-  const { login, isLoggingIn } = useAuthStore();
+  const [showResendOption, setShowResendOption] = useState(false);
+  const { login, isLoggingIn, resendVerificationEmail } = useAuthStore();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    login(formData);
+    
+    if (!formData.email || !formData.password) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+
+    const result = await login(formData);
+    
+    // Show resend option if email is not verified
+    if (result?.requiresVerification) {
+      setShowResendOption(true);
+    }
+  };
+
+  const handleResendVerification = async () => {
+    const result = await resendVerificationEmail(formData.email);
+    if (result?.success) {
+      setShowResendOption(false);
+    }
   };
 
   return (
@@ -41,6 +61,23 @@ const LoginPage = () => {
             </div>
           </div>
 
+          {/* Email Verification Alert */}
+          {showResendOption && (
+            <div className="alert alert-warning">
+              <AlertCircle className="w-5 h-5" />
+              <div className="flex flex-col gap-1">
+                <span className="font-medium">Email Not Verified</span>
+                <span className="text-sm">Please verify your email before logging in.</span>
+                <button
+                  onClick={handleResendVerification}
+                  className="btn btn-outline btn-sm mt-2"
+                >
+                  Resend Verification Email
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="form-control">
@@ -56,7 +93,10 @@ const LoginPage = () => {
                   className={`input input-bordered w-full pl-10`}
                   placeholder="you@example.com"
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  onChange={(e) => {
+                    setFormData({ ...formData, email: e.target.value });
+                    setShowResendOption(false); // Hide resend option when email changes
+                  }}
                 />
               </div>
             </div>
@@ -94,7 +134,7 @@ const LoginPage = () => {
               {isLoggingIn ? (
                 <>
                   <Loader2 className="h-5 w-5 animate-spin" />
-                  Loading...
+                  Signing in...
                 </>
               ) : (
                 "Sign in"
@@ -112,8 +152,6 @@ const LoginPage = () => {
           </div>
         </div>
       </div>
-
-      
     </div>
   );
 };
